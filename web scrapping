@@ -1,0 +1,479 @@
+# WEB SCRAPING ASSIGNMENT-1
+
+Write a python program to scrape mentioned details from dineout.co.in and make data frame
+
+from bs4 import BeautifulSoup
+import requests
+
+page= requests.get("https://www.dineout.co.in/delhi-restaurants/buffet-special")
+page
+
+soup=BeautifulSoup(page.content)
+soup
+
+Restaurantname =[]
+
+for i in soup.find_all("a",class_="restnt-name ellipsis"):
+    Restaurantname.append(i.text)
+    
+Restaurantname
+
+Cuisine=[]
+
+for i in soup.find_all("span",class_="double-line-ellipsis"):
+    Cuisine.append(i.text.split('|')[1])
+    
+Cuisine
+
+Location=[]
+
+for i in soup.find_all("div",class_="restnt-loc ellipsis"):
+    Location.append(i.text)
+    
+Location
+
+Ratings=[]
+
+for i in soup.find_all("div",class_="restnt-rating rating-4"):
+    Ratings.append(i.text)
+    
+Ratings
+
+Images=[]
+
+for i in soup.find_all("img",class_="no-img"):
+    Images.append(i.get("data-src"))
+
+Images
+
+import pandas as pd
+df = pd.DataFrame({'Restaurantname':Restaurantname,'Cuisine':Cuisine,'Location':Location,'Ratings':Ratings,'Images_URL':Images})
+
+df
+
+
+
+
+Write a python program to scrape mentioned news details from https://www.cnbc.com/world/?region=world  and make data frame
+
+
+from bs4 import BeautifulSoup
+import requests
+
+page=requests.get('https://www.cnbc.com/world/?region=world')
+
+page
+
+news=BeautifulSoup(page.content)
+
+news
+
+Headline=[]
+for i in news.find_all('a',class_='LatestNews-headline'):
+   Headline.append(i.text)
+Headline
+
+
+Time=[]
+
+for i in news.find_all("time",class_="LatestNews-timestamp"):
+    Time.append(i.text)
+
+Time
+
+url = "https://www.cnbc.com/world/?region=world"
+webpage = requests.get(url) 
+trav = BeautifulSoup(webpage.content, "html.parser")
+for link in trav.find_all('a'):
+    print(type(link), " ", link)
+
+trav.text
+
+import pandas as pd
+df=pd.DataFrame({"News":Headline,"Time":Time,})
+df
+
+
+Write a python program to scrape the details of most downloaded articles from AI in last 90 days
+
+from bs4 import BeautifulSoup
+import requests
+
+page= requests.get("https://www.journals.elsevier.com/artificial-intelligence/most-downloaded-articles")
+page
+
+soup=BeautifulSoup(page.content)
+soup
+
+titles=[]
+
+for i in soup.find_all("h2",class_="sc-1qrq3sd-1 gRGSUS sc-1nmom32-0 sc-1nmom32-1 btcbYu goSKRg"):
+    titles.append(i.text)
+
+titles
+
+Author=[]
+
+for i in soup.find_all("span",class_="sc-1w3fpd7-0 dnCnAO"):
+    Author.append(i.text)
+
+Author
+
+Date=[]
+
+for i in soup.find_all("span",class_="sc-1thf9ly-2 dvggWt"):
+    Date.append(i.text)
+
+Date
+
+url = "https://www.journals.elsevier.com/artificial-intelligence/most-downloaded-articles"
+webpage = requests.get(url) 
+trav = BeautifulSoup(webpage.content, "html.parser")
+for link in trav.find_all('a'):
+    print(type(link), " ", link)
+
+
+
+trav.text  
+
+import pandas as pd
+df=pd.DataFrame({"Title":titles,"Author":Author,"Published Date":Date,"url":"https://www.journals.elsevier.com/artificial-intelligence/most-downloaded-articles"})
+df
+
+ Write s python program to display list of respected former presidents of India(i.e. Name , Term of office) from https://presidentofindia.nic.in/former-presidents.htm and make data frame. 
+
+from bs4 import BeautifulSoup
+import requests
+
+page= requests.get("https://presidentofindia.nic.in/former-presidents.htm")
+page
+
+soup=BeautifulSoup(page.content)
+soup
+
+Name=[]
+for i in soup.find_all('h3'):
+    Name.append(i.text)
+
+Name
+
+Term=[]
+for i in soup.find_all('p'):
+    Term.append(i.text)
+    
+Term
+
+import pandas as pd
+df=pd.DataFrame({"PresidentiaL List":Name})
+df
+
+
+Write a python program to display IMDB’s Top rated 50 movies’ data (i.e. name, rating, year of release) and make data frame
+
+from bs4 import BeautifulSoup
+import requests
+
+page= requests.get("https://www.imdb.com/search/title/?groups=top_100") 
+page
+
+soup=BeautifulSoup(page.content)
+soup
+
+def get_movie_titles(soup):
+    
+    selection_class="lister-item-header"
+    movie_title_tags=soup.find_all('h3',{'class':selection_class})
+    movie_titles=[]
+
+    for tag in movie_title_tags:
+        title = tag.find('a').text
+        movie_titles.append(title)
+        
+        
+    return movie_titles
+
+titles = get_movie_titles(soup)
+titles
+
+Ratings=[]
+def get_movie_rating(soup):
+    rating_selector="inline-block ratings-imdb-rating"         
+    movie_rating_tags=soup.find_all('div',{'class':rating_selector})
+    movie_rating_tagss=[] 
+    for tag in movie_rating_tags:
+        movie_rating_tagss.append(tag.get_text().strip())
+    return movie_rating_tagss
+
+Ratings = get_movie_rating(soup)
+Ratings
+
+year=[]
+for i in soup.find_all("span",class_="lister-item-year text-muted unbold"):
+    year.append(i.text)
+
+year
+
+import pandas as pd
+df = pd.DataFrame({'Name':titles,'ratings':Ratings,'year':year})
+df
+
+Write a python program to display IMDB’s Top rated 50 Indian movies’ data (i.e. name, rating, year of release) and make data frame.
+
+from bs4 import BeautifulSoup
+import requests
+
+page= requests.get("https://www.imdb.com/list/ls079077479/") 
+page
+
+soup=BeautifulSoup(page.content)
+soup
+
+def get_movie_name(soup):
+    
+    selection_class="lister-item-header"
+    movie_name_tags=soup.find_all('h3',{'class':selection_class})
+    movie_name=[]
+
+    for tag in movie_name_tags:
+        title = tag.find('a').text
+        movie_name.append(title)
+        
+        
+    return movie_name
+
+name = get_movie_name(soup)
+name[:50]
+
+def get_movie_rating(soup):
+    rating_selector="ipl-rating-widget"            
+    movie_rating_tags=soup.find_all('div',{'class':"ipl-rating-star small"})
+    movie_rating_tagss=[]
+    for tag in movie_rating_tags:
+        movie_rating_tagss.append(tag.get_text().strip())
+    return movie_rating_tagss
+
+ratings = get_movie_rating(soup)
+ratings[:50]
+
+
+def get_movie_year(soup):
+    year_selector = "lister-item-year text-muted unbold"           
+    movie_year_tags=soup.find_all('span',{'class':year_selector})
+    movie_year_tagss=[]
+    for tag in movie_year_tags:
+        movie_year_tagss.append(tag.get_text().strip()[1:5])
+    return movie_year_tagss
+
+
+years = get_movie_year(soup)
+years[:50]
+
+import pandas as pd 
+df = pd.DataFrame({'Name':name,'ratings':ratings,'year':years})
+df.head(50)
+
+Top 10 ODI teams in women’s cricket along with the records for matches, points and rating.
+
+import requests
+from bs4 import BeautifulSoup
+
+page=requests.get('https://www.icc-cricket.com/rankings/womens/team-rankings/odi')
+page
+
+soup=BeautifulSoup(page.content)
+soup
+
+Team=[]
+
+for i in soup.find_all('span',class_='u-hide-phablet'):
+    Team.append(i.text)
+Team
+
+match=[]
+
+for i in soup.find_all('td',class_='table-body__cell u-center-text'):
+  match.append(i.text)
+match
+
+rating=[]
+for i in soup.find_all('td',class_="table-body__cell u-text-right rating"):
+    rating.append(i.text)
+rating
+
+Top 10 women’s ODI Batting players along with the records of their team and rating
+
+import requests
+from bs4 import BeautifulSoup
+
+page=requests.get('https://www.icc-cricket.com/rankings/womens/player-rankings/odi/batting')
+page
+
+soup=BeautifulSoup(page.content)
+soup
+
+player_name=[]
+
+for i in soup.find_all('td',class_='table-body__cell rankings-table__name name'):
+   player_name.append(i.text)
+
+player_name
+
+
+Team=[]
+for i in soup.find_all('span',class_='table-body__logo-text'):
+  Team.append(i.text)
+Team
+
+Rating=[]
+for i in soup.find_all('td',class_='table-body__cell rating'):
+  Rating.append(i.text)
+Rating
+
+import pandas as pd
+df=pd.DataFrame({"Player Name":player_name, "Team": Team, "Rating":Rating})
+df.head(10)
+
+
+Top 10 women’s ODI all-rounder along with the records of their team and rating
+
+import requests
+from bs4 import BeautifulSoup
+
+page=requests.get('https://www.icc-cricket.com/rankings/womens/player-rankings/odi/all-rounder')
+page
+
+soup=BeautifulSoup(page.content)
+soup
+
+player_name=[]
+for i in soup.find_all('td',class_='table-body__cell rankings-table__name name'):
+   player_name.append(i.text)
+player_name
+
+Team=[]
+for i in soup.find_all('span',class_='table-body__logo-text'):
+  Team.append(i.text)
+Team
+
+Rating=[]
+for i in soup.find_all('td',class_='table-body__cell rating'):
+  Rating.append(i.text)
+Rating
+
+import pandas as pd
+df=pd.DataFrame({"Player Name":player_name, "Team": Team, "Rating":Rating})
+df.head(10)
+
+
+Top 10 ODI teams in men’s cricket along with the records for matches, points and rating
+
+import requests
+from bs4 import BeautifulSoup
+
+page=requests.get('https://www.icc-cricket.com/rankings/mens/team-rankings/odi')
+page
+
+page=BeautifulSoup(page.content)
+page
+
+country=[]
+for i in page.find_all('span',class_='u-hide-phablet'):
+    country.append(i.text)
+
+country
+
+match=[]
+for i in page.find_all('td',class_='table-body__cell u-center-text'):
+    match.append(i.text)
+match
+
+rating=[]
+for i in page.find_all('td',class_='table-body__cell u-text-right rating'):
+    rating.append(i.text)
+rating
+
+
+Top 10 ODI Batsmen along with the records of their team and rating
+
+import requests
+from bs4 import BeautifulSoup
+
+page=requests.get('https://www.icc-cricket.com/rankings/mens/player-rankings/odi/batting')
+page
+
+soup=BeautifulSoup(page.content)
+soup
+
+player_name=[]
+for i in soup.find_all('td',class_='table-body__cell rankings-table__name name'):
+   player_name.append(i.text)
+player_name
+
+Team=[]
+for i in soup.find_all("span",class_='table-body__logo-text'):
+  Team.append(i.text)
+Team
+
+Rating=[]
+for i in soup.find_all('td',class_='table-body__cell rating'):
+  Rating.append(i.text)
+Rating
+
+
+import pandas as pd
+df=pd.DataFrame({"Team": Team, "Rating":Rating, "player_name":player_name})
+df.head(10)
+
+Top 10 ODI bowlers along with the records of their team and rating.
+
+import requests
+from bs4 import BeautifulSoup
+
+page=requests.get('https://www.icc-cricket.com/rankings/mens/player-rankings/odi/bowling')
+page
+
+soup=BeautifulSoup(page.content)
+soup
+
+player_name=[]
+for i in soup.find_all('td',class_='table-body__cell rankings-table__name name'):
+   player_name.append(i.text)
+player_name
+
+Team=[]
+for i in soup.find_all('span',class_='table-body__logo-text'):
+  Team.append(i.text)
+Team
+
+Rating=[]
+for i in soup.find_all('td',class_='table-body__cell rating'):
+  Rating.append(i.text)
+
+Rating
+
+import pandas as pd
+df=pd.DataFrame({"Player Name":player_name, "Team": Team, "Rating":Rating})
+df.head(10)
+
+
+ Write a python program to display all the header tags from wikipedia.org and make data frame. 
+
+from bs4 import BeautifulSoup
+import requests
+
+page= requests.get("https://en.wikipedia.org/wiki/Main_Page")
+page
+
+soup=BeautifulSoup(page.content)
+soup
+
+titles = soup.find_all(['h1', 'h2','h3','h4','h5','h6'])
+
+titles
+
+print('List all the header tags :', *titles, sep='\n\n')
+
+import pandas as pd
+df=pd.DataFrame({"List":titles})
+df
+
